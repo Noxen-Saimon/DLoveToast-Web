@@ -93,10 +93,24 @@
       }
 
       .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
         font-family: "Nunito", "Poppins", sans-serif;
         font-size: 24px;
         font-weight: 800;
         letter-spacing: 0.4px;
+        color: var(--header-text);
+        text-decoration: none;
+      }
+
+      .logo-img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
       }
 
       nav {
@@ -315,6 +329,29 @@
         overflow: auto;
       }
 
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translate(-50%, 24px);
+        background: linear-gradient(135deg, var(--pink), var(--pink-strong));
+        color: #ffffff;
+        padding: 10px 16px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        z-index: 120;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+
       footer {
         text-align: center;
         padding: 24px 16px;
@@ -387,7 +424,14 @@
 
   <body>
     <header>
-      <div class="logo">D'Love Toast</div>
+      <a href="#home" class="logo" aria-label="Home">
+        <img
+          class="logo-img"
+          src="./dist/images/Logo.jpeg"
+          alt="Logo D'Love Toast"
+        />
+        <span>D'Love Toast</span>
+      </a>
 
       <nav>
         <a href="#home">Home</a>
@@ -415,10 +459,10 @@
             src="./dist/images/product/Roti-1.jpeg"
             alt="Strawberry Yoghurt Cheese"
           />
-          <h3>Strawberry Yoghurt Cheese</h3>
+          <h3>Strawberry Yoghurt Cheese Toast</h3>
           <p>Toast love dengan strawberry yoghurt dan cheese.</p>
           <p class="price">Rp16.000</p>
-          <button class="btn" onclick="addCart('Strawberry Yoghurt Cheese')">
+          <button class="btn" onclick="addCart('Strawberry Yoghurt Cheese Toast')">
             Tambah Keranjang
           </button>
         </div>
@@ -429,10 +473,10 @@
             src="./dist/images/product/Roti-2.jpeg"
             alt="Strawberry Yoghurt Meses"
           />
-          <h3>Strawberry Yoghurt Meses</h3>
+          <h3>Strawberry Yoghurt Meses Toast</h3>
           <p>Toast love dengan strawberry yoghurt dan meses.</p>
           <p class="price">Rp16.000</p>
-          <button class="btn" onclick="addCart('Strawberry Yoghurt Meses')">
+          <button class="btn" onclick="addCart('Strawberry Yoghurt Meses Toast')">
             Tambah Keranjang
           </button>
         </div>
@@ -443,12 +487,12 @@
             src="./dist/images/product/Roti-3.jpeg"
             alt="Strawberry Yoghurt Cheese Meses"
           />
-          <h3>Strawberry Yoghurt Cheese Meses</h3>
+          <h3>Strawberry Yoghurt Cheese Meses Toast</h3>
           <p>Kombinasi cheese dan meses.</p>
           <p class="price">Rp16.000</p>
           <button
             class="btn"
-            onclick="addCart('Strawberry Yoghurt Cheese Meses')"
+            onclick="addCart('Strawberry Yoghurt Cheese Meses Toast')"
           >
             Tambah Keranjang
           </button>
@@ -485,6 +529,7 @@
       <ul id="cartList"></ul>
       <button class="btn" onclick="checkout()">Pesan via WhatsApp</button>
     </div>
+    <div id="cartToast" class="toast" role="status" aria-live="polite"></div>
 
     <footer>
       <p>© 2026 D'Love Toast</p>
@@ -494,10 +539,12 @@
       let cart = [];
       const number = "6289669527260";
       const themeKey = "dlove-theme";
+      let toastTimer;
 
       function addCart(item) {
         cart.push(item);
         updateCart();
+        showCartNotification(item);
       }
 
       function updateCart() {
@@ -514,6 +561,19 @@
       function toggleCart() {
         let box = document.getElementById("cartBox");
         box.style.display = box.style.display === "block" ? "none" : "block";
+      }
+
+      function showCartNotification(item) {
+        const toast = document.getElementById("cartToast");
+        if (!toast) return;
+
+        toast.innerText = `${item} ditambahkan ke keranjang`;
+        toast.classList.add("show");
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 1800);
       }
 
       function checkout() {
